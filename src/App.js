@@ -56,7 +56,6 @@ const App = () => {
   const handleStationClick = async (stationId) => {
     setLoading(true);
     setError('');
-    setSelectedStation(null);
 
     try {
       const details = await fetchStationDetails(stationId, API_KEY);
@@ -66,6 +65,10 @@ const App = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const closeModal = () => {
+    setSelectedStation(null);
   };
 
   return (
@@ -111,17 +114,41 @@ const App = () => {
       </div>
 
       {selectedStation && (
-        <div>
-          <h2>{selectedStation.name} Detayları</h2>
-          <p>Adres: {selectedStation.street}, {selectedStation.place}</p>
-          <p>Benzin (E5): {selectedStation.e5 || 'Bilgi yok'}</p>
-          <p>Benzin (E10): {selectedStation.e10 || 'Bilgi yok'}</p>
-          <p>Dizel: {selectedStation.diesel || 'Bilgi yok'}</p>
-          <p>Açık mı? {selectedStation.isOpen ? 'Evet' : 'Hayır'}</p>
+        <div className="modal" style={modalStyles.overlay}>
+          <div style={modalStyles.content}>
+            <h2>{selectedStation.name} Detayları</h2>
+            <p>Adres: {selectedStation.street}, {selectedStation.place}</p>
+            <p>Benzin (E5): {selectedStation.e5 || 'Bilgi yok'}</p>
+            <p>Benzin (E10): {selectedStation.e10 || 'Bilgi yok'}</p>
+            <p>Dizel: {selectedStation.diesel || 'Bilgi yok'}</p>
+            <p>Açık mı? {selectedStation.isOpen ? 'Evet' : 'Hayır'}</p>
+            <button onClick={closeModal}>Kapat</button>
+          </div>
         </div>
       )}
     </div>
   );
+};
+
+const modalStyles = {
+  overlay: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.75)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  content: {
+    background: 'white',
+    padding: '20px',
+    borderRadius: '8px',
+    maxWidth: '500px',
+    width: '100%',
+  },
 };
 
 export default App;
