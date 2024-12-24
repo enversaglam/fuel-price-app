@@ -43,6 +43,25 @@ export const searchByCity = async ({ cityQuery, radius = 10, fuelType = 'all', a
   }
 };
 
+// Search fuel stations by coordinates
+export const searchFuelStations = async ({ lat, lng, radius }) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/stations`, {
+      params: {
+        lat,
+        lng,
+        radius,
+        apikey: API_KEY,
+      },
+    });
+
+    return response.data.stations; // API yanıtındaki istasyonlar
+  } catch (error) {
+    console.error('API error:', error);
+    throw new Error('Failed to fetch fuel stations');
+  }
+};
+
 // Fetch station details by ID
 export const fetchStationDetails = async (stationId, apiKey) => {
   try {
