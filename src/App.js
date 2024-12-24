@@ -24,7 +24,8 @@ function App() {
 
 export default App;
  */
-
+import logo from './logo.svg';
+import './App.css';
 import React, { useState } from "react";
 import { getStationsNearby } from "./services/api";
 
@@ -72,7 +73,11 @@ const App = () => {
           </li>
         ))}
       </ul>
+      <div className="App">
+        <img src={logo} className="App-logo" alt="logo" />
+      </div>
     </div>
+    
   );
 };
 
