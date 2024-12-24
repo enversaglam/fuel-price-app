@@ -24,62 +24,104 @@ function App() {
 
 export default App;
  */
-import logo from './logo.svg';
-import './App.css';
-import React, { useState } from "react";
-import { getStationsNearby } from "./services/api";
+import React, { useState } from 'react';
+import { searchByCity, fetchStationDetails } from './services/api';
 
 const App = () => {
-  const [latitude, setLatitude] = useState("");
-  const [longitude, setLongitude] = useState("");
-  const [radius, setRadius] = useState(5);
+  const [cityQuery, setCityQuery] = useState('');
+  const [radius, setRadius] = useState(5); // Varsayılan radius
   const [stations, setStations] = useState([]);
+  const [selectedStation, setSelectedStation] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const fetchStations = async () => {
+  const API_KEY = 'a14a2e07-973a-729f-dd9a-06e0a63493ca';
+
+  const handleSearch = async () => {
+    setLoading(true);
+    setError('');
+    setStations([]);
+    setSelectedStation(null);
+
     try {
-      const data = await getStationsNearby(latitude, longitude, radius);
-      if (data.ok) {
-        setStations(data.stations);
-      } else {
-        alert("Error fetching stations: " + data.message);
-      }
-    } catch (error) {
-      alert("An error occurred while fetching data.");
+      const results = await searchByCity({ cityQuery, radius, apiKey: API_KEY });
+      setStations(results);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleStationClick = async (stationId) => {
+    setLoading(true);
+    setError('');
+    setSelectedStation(null);
+
+    try {
+      const details = await fetchStationDetails(stationId, API_KEY);
+      setSelectedStation(details);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div>
-      <h1>Tankstellen-Preise Suchen</h1>
-      <div>
-        <label>Latitude:</label>
-        <input type="text" value={latitude} onChange={(e) => setLatitude(e.target.value)} />
-      </div>
-      <div>
-        <label>Longitude:</label>
-        <input type="text" value={longitude} onChange={(e) => setLongitude(e.target.value)} />
-      </div>
-      <div>
-        <label>Radius (km):</label>
-        <input type="number" value={radius} onChange={(e) => setRadius(e.target.value)} />
-      </div>
-      <button onClick={fetchStations}>Ara</button>
+    <div className="App">
+      <h1>Yakıt İstasyonu Arama</h1>
 
-      <h2>Sonuçlar</h2>
-      <ul>
-        {stations.map((station) => (
-          <li key={station.id}>
-            {station.name} - {station.brand} - Diesel: {station.diesel || "N/A"}€ - E5: {station.e5 || "N/A"}€
-          </li>
-        ))}
-      </ul>
-      <div className="App">
-        <img src={logo} className="App-logo" alt="logo" />
+      <div>
+        <input
+          type="text"
+          placeholder="Şehir adı girin"
+          value={cityQuery}
+          onChange={(e) => setCityQuery(e.target.value)}
+        />
+        <input
+          type="number"
+          placeholder="Yarıçap (km)"
+          value={radius}
+          onChange={(e) => setRadius(e.target.value)}
+          min="1"
+          max="25"
+        />
+        <button onClick={handleSearch} disabled={loading}>
+          Ara
+        </button>
       </div>
+
+      {loading && <p>Yükleniyor...</p>}
+
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+
+      <div>
+        <h2>Yakıt İstasyonları</h2>
+        <ul>
+          {stations.map((station) => (
+            <li key={station.id}>
+              {station.name} ({station.brand}) - {station.dist} km
+              <button onClick={() => handleStationClick(station.id)}>
+                Detaylar
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {selectedStation && (
+        <div>
+          <h2>{selectedStation.name} Detayları</h2>
+          <p>Adres: {selectedStation.street}, {selectedStation.place}</p>
+          <p>Benzin (E5): {selectedStation.e5 || 'Bilgi yok'}</p>
+          <p>Benzin (E10): {selectedStation.e10 || 'Bilgi yok'}</p>
+          <p>Dizel: {selectedStation.diesel || 'Bilgi yok'}</p>
+          <p>Açık mı? {selectedStation.isOpen ? 'Evet' : 'Hayır'}</p>
+        </div>
+      )}
     </div>
-    
   );
 };
-
 
 export default App;

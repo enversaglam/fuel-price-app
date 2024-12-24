@@ -1,37 +1,64 @@
+// services/api.js
 import axios from 'axios';
 
-const API_BASE_URL = "https://creativecommons.tankerkoenig.de/json";
+const API_BASE_URL = 'https://creativecommons.tankerkoenig.de/json';
 const API_KEY = "a14a2e07-973a-729f-dd9a-06e0a63493ca"; // Demo Key
 
-export const getStationsNearby = async (lat, lng, rad, type = 'all') => {
-  const url = `${API_BASE_URL}/list.php`;
+// Search by city
+export const searchByCity = async ({ cityQuery, radius = 10, fuelType = 'all', apiKey }) => {
   try {
-    const response = await axios.get(url, {
+    // Use the geocode API to convert the city query into coordinates
+    const geocodeResponse = await axios.get(`https://nominatim.openstreetmap.org/search`, {
       params: {
-        lat,
-        lng,
-        rad,
-        type,
-        sort: "dist",
-        apikey: API_KEY,
+        q: cityQuery,
+        format: 'json',
+        limit: 1,
       },
     });
-    return response.data;
+
+    if (!geocodeResponse.data.length) {
+      throw new Error('Şehir bulunamadı. Lütfen farklı bir arama deneyin.');
+    }
+
+    const { lat, lon } = geocodeResponse.data[0];
+
+    // Fetch gas stations near the coordinates
+    const stationsResponse = await axios.get(`${API_BASE_URL}/list.php`, {
+      params: {
+        lat,
+        lng: lon,
+        rad: radius,
+        type: fuelType,
+        apikey: apiKey,
+      },
+    });
+
+    if (stationsResponse.data.ok) {
+      return stationsResponse.data.stations;
+    } else {
+      throw new Error(stationsResponse.data.message || 'Yakıt istasyonları getirilemedi.');
+    }
   } catch (error) {
-    console.error("Error fetching nearby stations:", error);
-    throw error;
+    throw new Error(error.response?.data?.message || error.message || 'Bir hata oluştu.');
   }
 };
 
-export const getStationDetails = async (id) => {
-  const url = `${API_BASE_URL}/detail.php`;
+// Fetch station details by ID
+export const fetchStationDetails = async (stationId, apiKey) => {
   try {
-    const response = await axios.get(url, {
-      params: { id, apikey: API_KEY },
+    const response = await axios.get(`${API_BASE_URL}/detail.php`, {
+      params: {
+        id: stationId,
+        apikey: apiKey,
+      },
     });
-    return response.data;
+
+    if (response.data.ok) {
+      return response.data.station;
+    } else {
+      throw new Error(response.data.message || 'Detay bilgisi getirilemedi.');
+    }
   } catch (error) {
-    console.error("Error fetching station details:", error);
-    throw error;
+    throw new Error(error.response?.data?.message || error.message || 'Bir hata oluştu.');
   }
 };
