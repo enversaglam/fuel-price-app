@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/fuel-price-app/static/css/main.71e44e8f.css",
+    "main.js": "/fuel-price-app/static/js/main.f00ec116.js",
+    "static/js/488.b019da83.chunk.js": "/fuel-price-app/static/js/488.b019da83.chunk.js",
+    "index.html": "/fuel-price-app/index.html",
+    "main.71e44e8f.css.map": "/fuel-price-app/static/css/main.71e44e8f.css.map",
+    "main.f00ec116.js.map": "/fuel-price-app/static/js/main.f00ec116.js.map",
+    "488.b019da83.chunk.js.map": "/fuel-price-app/static/js/488.b019da83.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.71e44e8f.css",
+    "static/js/main.f00ec116.js"
+  ]
+}
