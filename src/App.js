@@ -64,7 +64,7 @@ const App = () => {
     <div className="App">
       <h1>Yakıt İstasyonu Arama</h1>
 
-      <div>
+      <div className="search">
         <select
           value={selectedState}
           onChange={(e) => {
@@ -90,6 +90,7 @@ const App = () => {
         </select>
 
         <input
+          className='radius'
           type="number"
           placeholder="Yarıçap (km)"
           value={radius}
@@ -106,13 +107,18 @@ const App = () => {
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
-      <div>
+      <div className="stations">
         <ul>
           {stations.map((station) => (
-            <li key={station.id}>
-              <strong>{station.name}</strong> ({station.brand}) - {station.dist} km
-              <button onClick={() => handleStationClick(station.id)}>Detaylar</button>
-            </li>
+            
+              <li key={station.id}><div className="station">
+              <div className='stationname'><strong>{station.name}</strong></div>
+              <div>({station.brand}) - </div>
+              <div>{station.dist} km - </div>
+              <div>Diesel :<strong>{station.diesel}</strong></div>
+              <div><button onClick={() => handleStationClick(station.id)}>Detay</button></div>
+            </div></li>
+            
           ))}
         </ul>
       </div>
@@ -131,7 +137,7 @@ const App = () => {
               href={`https://www.google.com/maps/search/?api=1&query=${selectedStation.lat},${selectedStation.lng}`}
               target="_blank"
               rel="noopener noreferrer"
-              style={{ display: 'inline-block', marginTop: '10px', textDecoration: 'none', color: 'white', background: '#007bff', padding: '10px', borderRadius: '4px' }}
+              /* style={{ display: 'inline-block', marginTop: '10px', textDecoration: 'none', color: 'white', background: '#007bff', padding: '10px', borderRadius: '4px' }} */
             >
               Haritada Aç
             </a>

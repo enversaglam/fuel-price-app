@@ -9,6 +9,7 @@ body {
 
 .App {
   text-align: center;
+  justify-items: center;
   padding: 20px;
 }
 
@@ -26,6 +27,22 @@ input {
   font-size: 14px;
   width: calc(100% - 22px);
   max-width: 300px;
+}
+
+.radius {
+  padding: 10px;
+  margin: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  width: calc(100% - 22px);
+  max-width: 100px;
+}
+
+.search {
+  display: flex;
+  flex-wrap:wrap;
+  align-items: center;
 }
 
 button {
@@ -46,7 +63,7 @@ button:disabled {
 }
 
 button:hover:not(:disabled) {
-  background-color: #0056b3;
+  background-color: #00b35c;
 }
 
 ul {
@@ -55,7 +72,7 @@ ul {
 }
 
 li {
-  background: white;
+  background: #f2f5fa;
   margin: 10px 0;
   padding: 15px;
   border-radius: 4px;
@@ -86,5 +103,56 @@ li {
   background-color: #d9534f;
   color: white;
   font-size: 14px;
-  margin-top: 10px;
+  margin: 10px;
+}
+
+.modal a {
+  display: inline-block;
+  margin: 10px 5px;
+  text-decoration: none;
+  color: white;
+  background: #007bff;
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.modal a:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.modal a:hover:not(:disabled) {
+  background-color: #00b35c;
+}
+
+option, select {
+  padding: 10px;
+  margin: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  width: calc(100% - 22px);
+  max-width: 300px;
+}
+
+.station {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stations {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.stationname {
+  font-size: 16px;
+  font-weight: bold;
+  width: 50%;
+  text-align: left;
 }
